@@ -35,7 +35,7 @@ public class IdWorker{
     private long sequenceBits = 12L;
     //序列号最大值
     private long sequenceMask = -1L ^ (-1L << sequenceBits);
-    
+    // sequenceMask     (52bit)(0000...)1111 1111 1111
     //工作id需要左移的位数，12位
     private long workerIdShift = sequenceBits;
    //数据id需要左移位数 12+5=17位
@@ -73,6 +73,7 @@ public class IdWorker{
         if (lastTimestamp == timestamp) {
             sequence = (sequence + 1) & sequenceMask;
             if (sequence == 0) {
+                //   (51bit)(000...)   1 0000 0000 0000  & (52bit)(000...) 1111 1111 1111 == 0 .. so
                 timestamp = tilNextMillis(lastTimestamp);
             }
         } else {
